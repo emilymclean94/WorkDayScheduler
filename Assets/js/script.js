@@ -1,5 +1,5 @@
 var saveButton = $('.saveBtn');
-var taskDescription = $('.description');
+// var taskDescription = $('.description');
 var hour = $('.time-block');
 var timeDisplay = $('#currentDay');
 
@@ -27,27 +27,25 @@ $(function () {
   //   }
   // });
 
-  let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
+  $(saveButton).each(function () {
+    const hour = $(this).attr('id').split('-')[1];
+    const userInput = $('textarea').val();
 
-$('.time-block').each(function() {
-  const hour = $(this).attr('id').split('-')[1];
-  const description = $(this).find('.description').val();
+    let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
+    const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
 
-  const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
+    if (index !== -1) {
+      hourTasks[index].description = userInput;
+    } else {
+      const hourTask = {
+        hour: hour,
+        description: userInput,
+      };
+      hourTasks.push(hourTask);
+    }
+  });
 
-  if (index !== -1) {
-    hourTasks[index].description = description;
-  } else {
-    const hourTask = {
-      hour: hour,
-      description: description
-    };
-    hourTasks.push(hourTask);
-  }
-});
-
-
-localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
+  localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
 
 });
 
