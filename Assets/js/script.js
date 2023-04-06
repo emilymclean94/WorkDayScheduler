@@ -1,32 +1,32 @@
 
 $(document).ready(function () {
-  var hour = $('.time-block');
   var timeDisplay = $('#currentDay');
+  var rightNow = dayjs().format('MMM DD, YYYY');
 
   function displayTime() {
-    var rightNow = dayjs().format('MMM DD, YYYY');
     timeDisplay.text(rightNow);
   }
 
   // const currentHour = dayjs();
-  // const timeBlocks = document.querySelectorAll('.time-block');
+  const timeBlocks = document.querySelectorAll('.time-block');
 
-  // timeBlocks.forEach((timeBlock) => {
-  //   const hour = parseInt(timeBlock.id.split('-')[1]);
-  //   if (hour === currentHour) {
-  //     timeBlock.classList.add('present');
-  //   } else if (hour < currentHour) {
-  //     timeBlock.classList.add('past');
-  //   } else {
-  //     timeBlock.classList.add('future');
-  //     $(timeBlock).removeClass('past');
-  //     $(timeBlock).removeClass('present');
-  //   }
-  // });
+  $('.time-block').each(function () {
+    const hourEl = $(this).siblings().attr('id').split('-')[1];
+    if (hourEl == rightNow) {
+      $('.time-block').addClass('present');
+    } else if (hourEl < rightNow) {
+      timeBlocks.classList.add('past');
+    } else {
+      timeBlocks.classList.add('future');
+      $(timeBlocks).removeClass('past');
+      $(timeBlocks).removeClass('present');
+    }
+  });
 
-  let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
+
 
   $('.saveBtn').each(function () {
+    let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
     const hour = $(this).parent().attr('id').split('-')[1];
     const userInput = $(this).siblings('.description').val();
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
         description: userInput,
       };
       hourTasks.push(hourTask);
-    }
+    };
 
     localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
 
