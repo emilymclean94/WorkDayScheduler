@@ -1,15 +1,12 @@
-var saveButton = $('.saveBtn');
-// var taskDescription = $('.description');
-var hour = $('.time-block');
-var timeDisplay = $('#currentDay');
 
+$(document).ready(function () {
+  var hour = $('.time-block');
+  var timeDisplay = $('#currentDay');
 
-function displayTime() {
-  var rightNow = dayjs().format('MMM DD, YYYY');
-  timeDisplay.text(rightNow);
-}
-
-$(function () {
+  function displayTime() {
+    var rightNow = dayjs().format('MMM DD, YYYY');
+    timeDisplay.text(rightNow);
+  }
 
   // const currentHour = dayjs();
   // const timeBlocks = document.querySelectorAll('.time-block');
@@ -27,11 +24,13 @@ $(function () {
   //   }
   // });
 
-  $(saveButton).each(function () {
-    const hour = $(this).attr('id').split('-')[1];
-    const userInput = $('textarea').val();
+  let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
 
-    let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
+  $('.saveBtn').each(function () {
+    const hour = $(this).parent().attr('id').split('-')[1];
+    const userInput = $(this).siblings('.description').val();
+
+
     const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
 
     if (index !== -1) {
@@ -43,13 +42,13 @@ $(function () {
       };
       hourTasks.push(hourTask);
     }
+
+    localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
+
   });
 
-  localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
-
+  displayTime();
+  setInterval(displayTime, 1000);
 });
 
-
-displayTime();
-setInterval(displayTime, 1000);
 
