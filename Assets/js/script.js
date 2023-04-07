@@ -1,52 +1,60 @@
 
 $(document).ready(function () {
   var timeDisplay = $('#currentDay');
-  var rightNow = dayjs().format('MMM DD, YYYY');
+  var currentHour = dayjs('04-06-2023').format('MM DD, YYYY 12:00:00 PM').$H;
 
   function displayTime() {
+    var rightNow = dayjs().format('MMM DD, YYYY');
     timeDisplay.text(rightNow);
   }
 
+
+
+
+  // Updates each time block to represent past, present, and future hours
   $('.time-block').each(function () {
-    const hourEl = $(this).siblings().attr('id').split('-')[1];
-    if (hourEl == rightNow) {
-      $('.time-block').addClass('present');
-    } else if (hourEl < rightNow) {
-      timeBlocks.classList.add('past');
+    const hourEl = $(this).attr('id').split('-');
+    if (parseInt(hourEl[1]) === currentHour) {
+      $(this).addClass('present');
+    } else if (parseInt(hourEl[1]) < currentHour) {
+      $(this).addClass('past');
     } else {
-      timeBlocks.classList.add('future');
-      $('.time-block').removeClass('past');
-      $('.time-block').removeClass('present');
+      $(this).addClass('future');
     }
   });
+  //end time-block class change function
 
+  //When user clicks the save button this function is fired 
+  $('.saveBtn').click(function () {
 
-  $('.saveBtn').each(function () {
-    console.log('POW!');
-    
-    let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
-    const hour = $(this).parent().attr('id').split('-')[1];
-    const userInput = $(this).siblings('.description').val();
+    $('.saveBtn').each(function () {
+      console.log('POW!');
 
+      let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
+      const hour = $(this).parent().attr('id').split('-')[1];
+      const userInput = $(this).siblings('.description').val();
+      const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
 
-    const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
-
-    if (index !== -1) {
-      hourTasks[index].description = userInput;
-    } else {
-      const hourTask = {
-        hour: hour,
-        description: userInput,
+      if (index !== -1) {
+        hourTasks[index].description = userInput;
+      } else {
+        const hourTask = {
+          hour: hour,
+          description: userInput,
+        };
+        hourTasks.push(hourTask);
       };
-      hourTasks.push(hourTask);
-    };
 
-    localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
+      function saveToStorage(hourTasks) {
+        localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
+      }
+
+      saveToStorage();
+
+    });
 
   });
 
   displayTime();
   setInterval(displayTime, 1000);
 });
-
-
