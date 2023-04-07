@@ -7,9 +7,6 @@ $(document).ready(function () {
     timeDisplay.text(rightNow);
   }
 
-  // const currentHour = dayjs();
-  const timeBlocks = document.querySelectorAll('.time-block');
-
   $('.time-block').each(function () {
     const hourEl = $(this).siblings().attr('id').split('-')[1];
     if (hourEl == rightNow) {
@@ -18,14 +15,15 @@ $(document).ready(function () {
       timeBlocks.classList.add('past');
     } else {
       timeBlocks.classList.add('future');
-      $(timeBlocks).removeClass('past');
-      $(timeBlocks).removeClass('present');
+      $('.time-block').removeClass('past');
+      $('.time-block').removeClass('present');
     }
   });
 
 
-
   $('.saveBtn').each(function () {
+    console.log('POW!');
+    
     let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
     const hour = $(this).parent().attr('id').split('-')[1];
     const userInput = $(this).siblings('.description').val();
