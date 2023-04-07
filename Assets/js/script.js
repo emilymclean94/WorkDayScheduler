@@ -1,38 +1,24 @@
 
 $(document).ready(function () {
   var timeDisplay = $('#currentDay');
-  var currentHour = dayjs('04-06-2023').format('MM DD, YYYY 12:00:00 PM').$H;
+  var currentHour = dayjs().$H;
 
   function displayTime() {
     var rightNow = dayjs().format('MMM DD, YYYY');
     timeDisplay.text(rightNow);
   }
 
-
-
-
-  // Updates each time block to represent past, present, and future hours
-  $('.time-block').each(function () {
-    const hourEl = $(this).attr('id').split('-');
-    if (parseInt(hourEl[1]) === currentHour) {
-      $(this).addClass('present');
-    } else if (parseInt(hourEl[1]) < currentHour) {
-      $(this).addClass('past');
-    } else {
-      $(this).addClass('future');
-    }
-  });
-  //end time-block class change function
-
   //When user clicks the save button this function is fired 
   $('.saveBtn').click(function () {
 
     $('.saveBtn').each(function () {
-      console.log('POW!');
+      // console.log('POW!');
 
       let hourTasks = JSON.parse(localStorage.getItem('hourTasks')) || [];
       const hour = $(this).parent().attr('id').split('-')[1];
       const userInput = $(this).siblings('.description').val();
+
+
       const index = hourTasks.findIndex(hourTask => hourTask.hour === hour);
 
       if (index !== -1) {
@@ -49,11 +35,25 @@ $(document).ready(function () {
         localStorage.setItem('hourTasks', JSON.stringify(hourTasks));
       }
 
-      saveToStorage();
+      saveToStorage(hourTasks);
 
     });
 
   });
+
+  
+  // Updates each time block to represent past, present, and future hours
+  $('.time-block').each(function () {
+    const hourEl = $(this).attr('id').split('-');
+    if (parseInt(hourEl[1]) === currentHour) {
+      $(this).addClass('present');
+    } else if (parseInt(hourEl[1]) < currentHour) {
+      $(this).addClass('past');
+    } else {
+      $(this).addClass('future');
+    }
+  });
+  //end time-block class change function
 
   displayTime();
   setInterval(displayTime, 1000);
